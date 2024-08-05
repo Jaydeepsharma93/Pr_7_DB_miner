@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:pr_7_db_miner/view/detailscreen.dart';
-
 import '../Controller/controller.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -27,7 +24,9 @@ class HomeScreen extends StatelessWidget {
             centerTitle: true,
             actions: [
               IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.toNamed('/fev');
+                  },
                   icon: Icon(Icons.favorite, size: 28, color: Colors.brown))
             ],
             expandedHeight: 160,
@@ -40,55 +39,61 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Obx(
-            () => SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 15),
-                    child: Container(
-                      height: 85,
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                            image: AssetImage('assets/img/$index.jpg'),
-                            // Updated to use a placeholder image
-                            fit: BoxFit.cover),
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.to(DetailScreen());
-                        },
-                        child: ListTile(
-                          title: Text(
-                            apiCalling.quoteData[index].quote.toString(),
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          subtitle: Text(
-                            apiCalling.quoteData[index].author.toString(),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          trailing: IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.delete, color: Colors.white),
-                          ),
-                          onTap: () {},
-                        ),
+            () => apiCalling.isLoading.value
+                ? SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height -
+                          160, // Adjust based on the AppBar height
+                      child: Center(
+                        child: CircularProgressIndicator(),
                       ),
                     ),
-                  );
-                },
-                childCount: apiCalling.quoteData.length,
-              ),
-            ),
+                  )
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 15),
+                          child: Container(
+                            height: 85,
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                  image: AssetImage('assets/img/$index.jpg'),
+                                  fit: BoxFit.cover),
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                apiCalling.quoteData[index].quote.toString(),
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                              subtitle: Text(
+                                apiCalling.quoteData[index].author.toString(),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              trailing: SizedBox(
+                                width: 10,
+                              ),
+                              onTap: () {
+                                apiCalling.onChangeIndex(index);
+                                Get.toNamed('/detail');
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      childCount: apiCalling.quoteData.length,
+                    ),
+                  ),
           ),
         ],
       ),

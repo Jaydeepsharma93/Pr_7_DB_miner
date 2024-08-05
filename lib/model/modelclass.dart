@@ -1,6 +1,5 @@
 class Quote {
-
-  String? quote, author, type,id;
+  String? quote, author, type, id;
 
   Quote({this.id, this.author, this.quote, this.type});
 
@@ -11,5 +10,14 @@ class Quote {
       quote: json['quote'],
       type: json['type'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'quote': quote,
+      'author': author,
+      'type': type,
+    };
   }
 }
